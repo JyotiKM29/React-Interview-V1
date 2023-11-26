@@ -592,3 +592,600 @@ Lazy loading is beneficial for optimizing web application performance by reducin
 **RWD:** Responsive web developnment
 **PWA:** 
 Progressive Web Apps
+
+
+
+# Hooks
+
+
+
+## 1. What is Hooks ?
+
+Hooks in React are tools that allow functional components to use state, lifecycle methods, and other React features without writing a class. They are functions that let you "hook into" React state and lifecycle features from function components.
+
+- useState
+- useEffect
+- useRef
+- useReducer
+- useContext
+- useLayouteffect
+- useMemo
+- useCallback
+- useMomoisation
+- customHooks
+## 2. Rule for Hooks ?
+
+### Rules for Hooks:
+
+1. **Only Call Hooks at the Top Level:** Don't call hooks inside loops, conditions, or nested functions. Always call hooks at the top level of your functional components.
+2. **Only Call Hooks from React Functions:** Call hooks from functional components or from custom hooks. Avoid calling hooks from regular JavaScript functions.
+3. **Naming Convention:** Hooks should always start with "use" to help developers identify that it's a hook function.
+## 3. what is useState ?
+```
+Imagine a Whiteboard 
+```
+
+- The React useState Hook allows us to track state in a function component.
+
+- State generally refers to data or properties that need to be tracking in an application.
+
+
+#### 1. Initialize useState
+We initialize our state by calling useState in our function component.
+
+useState accepts an initial state and returns two values:
+
+- The current state.
+- A function that updates the state.
+
+```
+import { useState } from "react";
+
+function FavoriteColor() {
+  const [color, setColor] = useState("");
+}
+
+```
+- The first value, color, is our current state.
+- The second value, setColor, is the function that is used to update our state.
+- Lastly, we set the initial state to an empty string: useState("")
+
+
+
+#### 2. Read State
+We can now include our state anywhe
+re in our component.
+
+
+```
+import { useState } from "react";
+import ReactDOM from "react-dom/client";
+
+function FavoriteColor() {
+  const [color, setColor] = useState("red");
+
+  return <h1>My favorite color is {color}!</h1>
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<FavoriteColor />);
+```
+#### 3. Update State
+To update our state, we use our state updater function.
+```
+import { useState } from "react";
+import ReactDOM from "react-dom/client";
+
+function FavoriteColor() {
+  const [color, setColor] = useState("red");
+
+  return (
+    <>
+      <h1>My favorite color is {color}!</h1>
+      <button
+        type="button"
+        onClick={() => setColor("blue")}
+      >Blue</button>
+    </>
+  )
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<FavoriteColor />);
+```
+## What is useEffect ?
+```
+Think of a Watcher or Observer:
+```
+- The useEffect Hook allows you to perform side effects in your components.
+
+- Some examples of side effects are: fetching data, directly updating the DOM, and timers.
+
+- useEffect accepts two arguments. The second argument is optional.
+```
+useEffect(<function>, <dependency>)
+```
+
+### Dependency Array 
+Example 1. No dependency passed:
+```
+useEffect(() => {
+  //Runs on every render
+});
+```
+Example
+2. An empty array:
+```
+useEffect(() => {
+  //Runs only on the first render
+}, []);
+```
+
+Example
+```
+3. Props or state values:
+
+useEffect(() => {
+  //Runs on the first render
+  //And any time any dependency value changes
+}, [prop, state]);
+```
+
+### Effect Cleanup
+Some effects require cleanup to reduce memory leaks.
+
+Timeouts, subscriptions, event listeners, and other effects that are no longer needed should be disposed.
+
+We do this by including a return function at the end of the useEffect Hook.
+
+```
+import { useState, useEffect } from "react";
+import ReactDOM from "react-dom/client";
+
+function Timer() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let timer = setTimeout(() => {
+    setCount((count) => count + 1);
+  }, 1000);
+
+  return () => clearTimeout(timer)
+  }, []);
+
+  return <h1>I've rendered {count} times!</h1>;
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Timer />);
+
+
+```
+## What is useRef ?
+
+```
+Think of a Pointer or Sticky Note
+```
+- The useRef Hook allows you to persist values between renders.
+- It can be used to store a mutable value that does not cause a re-render when updated.
+
+- It can be used to access a DOM element directly.
+
+
+### Does Not Cause Re-renders
+If we tried to count how many times our application renders using the useState Hook, we would be caught in an infinite loop since this Hook itself causes a re-render.
+
+- To avoid this, we can use the useRef Hook.
+
+
+- useRef() only returns one item. It returns an Object called current.
+
+- When we initialize useRef we set the initial value: useRef(0).
+
+
+### Accessing DOM Elements
+In React, we can add a ref attribute to an element to access it directly in the DOM.
+
+import { useRef } from "react";
+import ReactDOM from "react-dom/client";
+
+function App() {
+  const inputElement = useRef();
+
+  const focusInput = () => {
+    inputElement.current.focus();
+  };
+
+  return (
+    <>
+      <input type="text" ref={inputElement} />
+      <button onClick={focusInput}>Focus Input</button>
+    </>
+  );
+}
+
+
+### Tracking State Changes
+The useRef Hook can also be used to keep track of previous state values.
+
+This is because we are able to persist useRef values between renders.
+
+
+
+## What is useReducer ?
+```
+Imagine Organizing Tasks:
+```
+- The useReducer Hook is similar to the useState Hook.
+
+- It allows for custom state logic.
+
+- If you find yourself keeping track of multiple pieces of state that rely on complex logic, useReducer may be useful.
+
+Here's a concise overview:
+
+1. **State Management:** `useReducer` is used to manage state in React components by dispatching actions to update the state.
+
+2. **Reducer Function:** It takes in a reducer function and an initial state. The reducer function accepts the current state and an action, and returns the new state based on the action type.
+
+3. **Dispatching Actions:** To update the state, you dispatch actions to the reducer by calling the `dispatch` function returned by `useReducer`. Actions are plain JavaScript objects that contain a type property describing the action and additional data.
+
+   Example:
+   ```javascript
+   import React, { useReducer } from 'react';
+
+   // Reducer function
+   const reducer = (state, action) => {
+     switch (action.type) {
+       case 'INCREMENT':
+         return { ...state, count: state.count + 1 };
+       case 'DECREMENT':
+         return { ...state, count: state.count - 1 };
+       default:
+         return state;
+     }
+   };
+
+   // Component using useReducer
+   function Counter() {
+     const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+     return (
+       <div>
+         <p>Count: {state.count}</p>
+         <button onClick={() => dispatch({ type: 'INCREMENT' })}>Increment</button>
+         <button onClick={() => dispatch({ type: 'DECREMENT' })}>Decrement</button>
+       </div>
+     );
+   }
+   ```
+
+4. **Complex State Logic:** `useReducer` is preferred when managing complex state logic, especially when state updates involve multiple sub-values or complex transitions, making it easier to handle these cases in a centralized manner.
+
+`useReducer` provides a way to handle state updates using a `more controlled approach` similar to Redux, especially when the state logic becomes more intricate or involves multiple actions. It's beneficial for `managing complex state transitions` and `keeping state-related logic organized` within a React component.
+## What is useContext ?
+
+```
+Think of a classroom where students pass notes to each other. They share information without directly speaking aloud.
+```
+- useContext() in React provides a way to share and access information across components without manually passing props through each intermediate component. It simplifies the sharing of data or functionality throughout your app by creating a central storage (context) that components can tap into when needed.
+
+- `useContext` is a React hook used for consuming the context that has been created using the `React.createContext` method. It allows functional components to access and consume values from the nearest matching `Context.Provider` component in the component tree without needing to pass props through intermediate components manually.
+
+Here's a succinct overview:
+
+1. **Context in React:** Context provides a way to share data between components without having to pass props explicitly at every level of the component tree. It's useful for passing down global data, such as themes, user preferences, or authentication information.
+
+2. **Creating Context:** First, you create a context using `React.createContext`. This returns a Context object that includes a `Provider` component and a `Consumer` component (though `useContext` simplifies the use of the `Consumer`).
+
+   Example:
+   ```javascript
+   const MyContext = React.createContext(defaultValue);
+   ```
+
+3. **Consuming Context with `useContext`:** The `useContext` hook is used within a functional component to consume the context value provided by the nearest `Context.Provider` ancestor in the component tree.
+
+   Example:
+   ```javascript
+   import React, { useContext } from 'react';
+
+   const MyContext = React.createContext('default value');
+
+   function MyComponent() {
+     const contextValue = useContext(MyContext);
+
+     return (
+       <div>
+         <p>Context Value: {contextValue}</p>
+       </div>
+     );
+   }
+   ```
+
+4. **Consuming Multiple Contexts:** You can use multiple `useContext` hooks in a single component to consume multiple context values if needed.
+
+   Example:
+   ```javascript
+   function MyComponent() {
+     const value1 = useContext(MyContext1);
+     const value2 = useContext(MyContext2);
+
+     // ...rest of the component logic
+   }
+   ```
+
+`useContext` simplifies the consumption of context values within functional components, allowing easier access to shared data provided by `Context.Provider` components higher up in the component tree. It's especially useful for scenarios where passing props through intermediate components becomes cumbersome or impractical.
+## What is callBack ?
+```
+Imagine Memorizing a Recipe: 
+
+Think of learning a recipe by heart so that you can quickly recall and use it whenever you need it.
+```
+- The React useCallback Hook returns a memoized callback function.
+- This allows us to isolate resource intensive functions so that they will not automatically run on every render.
+
+- The useCallback Hook only runs when one of its dependencies update.
+
+- This can improve performance.
+- One reason to use useCallback is to prevent a component from re-rendering unless its props have changed.
+
+```
+import React, { useState, useCallback } from 'react';
+
+function ClickCounter() {
+  const [count, setCount] = useState(0);
+
+  // useCallback to memoize the increment function
+  const increment = useCallback(() => {
+    setCount(prevCount => prevCount + 1);
+  }, []); // Empty dependency array as there are no dependencies
+
+  return (
+    <div>
+      <h2>Click Counter</h2>
+      <p>Count: {count}</p>
+      <button onClick={increment}>Increment Count</button>
+    </div>
+  );
+}
+
+export default ClickCounter;
+```
+
+**Example:**
+
+ Imagine having a list component where you pass a function to handle item clicks. Using `useCallback()` on that function ensures that the function doesn’t change unless its dependencies (like state or props) change, preventing unnecessary re-renders of the list when the function remains the same.
+
+## useMemo
+```
+ Imagine Preparing Ingredients in Advance:
+ 
+
+ Think of preparing ingredients in advance before cooking. You do this to save time and effort when you're ready to use them in a recipe.
+
+```
+- useMemo() in React is used to optimize performance by caching the result of expensive calculations.
+- It ensures that the computation is only performed when needed, avoiding unnecessary recalculations and improving the efficiency of functional components.
+
+```
+import React, { useState, useMemo } from 'react';
+
+function ExpensiveCalculation({ number }) {
+  // useMemo to cache the result of the expensive calculation
+  const result = useMemo(() => {
+    console.log('Performing expensive calculation...');
+    // Simulating a computationally expensive operation
+    let sum = 0;
+    for (let i = 1; i <= number; i++) {
+      sum += i;
+    }
+    return sum;
+  }, [number]); // Dependency array - recalculates if 'number' changes
+
+  return (
+    <div>
+      <h2>Expensive Calculation</h2>
+      <p>Number: {number}</p>
+      <p>Result of Expensive Calculation: {result}</p>
+    </div>
+  );
+}
+
+function App() {
+  const [value, setValue] = useState(5);
+
+  return (
+    <div>
+      <input
+        type="number"
+        value={value}
+        onChange={(e) => setValue(parseInt(e.target.value))}
+      />
+      <ExpensiveCalculation number={value} />
+    </div>
+  );
+}
+
+export default App;
+```
+
+**Example:**
+Imagine a component that performs a complex calculation based on some props. Using useMemo() on that calculation ensures that the result is cached and recalculated only if the inputs (props) change, preventing unnecessary computations on each render.
+## What is useMemoisation ?
+
+``` 
+Imagine Using Sticky Notes:
+
+Think of sticky notes where you jot down a calculation result or an answer. When you need the same answer again, you look at the sticky note instead of recalculating.
+```
+Memoization is a technique used to improve performance by storing and reusing previously computed results. It's like using sticky notes to remember solutions, allowing functions to avoid repetitive work by returning cached results for specific inputs. This optimization can significantly speed up calculations or operations that would otherwise be expensive to repeat.
+
+```
+// Function without memoization
+function fibonacciWithoutMemoization(n) {
+  if (n <= 1) {
+    return n;
+  } else {
+    return fibonacciWithoutMemoization(n - 1) + fibonacciWithoutMemoization(n - 2);
+  }
+}
+
+// Function with memoization using closure
+function fibonacciWithMemoization() {
+  const cache = {}; // Cache to store previously calculated results
+
+  return function fib(n) {
+    if (n in cache) {
+      return cache[n]; // If result is already in cache, return it
+    } else {
+      if (n <= 1) {
+        return n;
+      } else {
+        // Calculate and store result in cache
+        cache[n] = fib(n - 1) + fib(n - 2);
+        return cache[n];
+      }
+    }
+  };
+}
+
+// Using the memoized function to calculate Fibonacci
+const memoizedFibonacci = fibonacciWithMemoization();
+
+console.log("Fibonacci without memoization (n = 6):", fibonacciWithoutMemoization(6));
+console.log("Fibonacci with memoization (n = 6):", memoizedFibonacci(6));
+```
+
+**Example:**
+
+Imagine a function that calculates Fibonacci numbers. Without memoization, it can be inefficient for larger values. With memoization, the function remembers the previously calculated values and doesn’t recompute them, making it faster.
+
+## What is  Custom Hooks
+
+Hooks are reusable functions.
+
+When you have component logic that needs to be used by multiple components, we can extract that logic to a custom Hook
+
+Custom Hooks start with "use". Example: useFetch
+
+Build a Hook
+
+```
+import { useState, useEffect } from "react";
+import ReactDOM from "react-dom/client";
+
+const Home = () => {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/todos")
+      .then((res) => res.json())
+      .then((data) => setData(data));
+ }, []);
+
+  return (
+    <>
+      {data &&
+        data.map((item) => {
+          return <p key={item.id}>{item.title}</p>;
+        })}
+    </>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Home />);
+```
+The fetch logic may be needed in other components as well, so we will extract that into a custom Hook.
+
+Move the fetch logic to a new file to be used as a custom Hook:
+
+Example:
+useFetch.js:
+```
+import { useState, useEffect } from "react";
+
+const useFetch = (url) => {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => setData(data));
+  }, [url]);
+
+  return [data];
+};
+
+export default useFetch;
+```
+
+index.js:
+```
+import ReactDOM from "react-dom/client";
+import useFetch from "./useFetch";
+
+const Home = () => {
+  const [data] = useFetch("https://jsonplaceholder.typicode.com/todos");
+
+  return (
+    <>
+      {data &&
+        data.map((item) => {
+          return <p key={item.id}>{item.title}</p>;
+        })}
+    </>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Home />);
+
+```
+We have created a new file called useFetch.js containing a function called useFetch which contains all of the logic needed to fetch our data.
+
+We removed the hard-coded URL and replaced it with a url variable that can be passed to the custom Hook.
+
+Lastly, we are returning our data from our Hook.
+
+In index.js, we are importing our useFetch Hook and utilizing it like any other Hook. This is where we pass in the URL to fetch data from.
+
+Now we can reuse this custom Hook in any component to fetch data from any URL.
+## 12. What is useLayoutEffect ?
+
+```
+ hink of Setting the Table:
+ 
+
+ Imagine preparing a table for a meal. Before guests arrive, you set the table with all the utensils and decorations, ensuring everything is in place.
+>
+```
+- useLayoutEffect() in React is similar to useEffect() but runs synchronously after DOM updates, just before the browser paints the changes. - - It's ideal for performing immediate DOM manipulations or measurements that need to be applied before the visual rendering occurs.
+
+**Example:**
+ 
+Consider a scenario where you need to measure the dimensions of an element and adjust its layout based on those measurements. `useLayoutEffect()` ensures that these measurements and layout adjustments occur before the browser visually renders the changes.
+
+
+
+## 13. Camparision of Hooks :
+
+Certainly! Here's a comparison of some important hooks in React:
+
+1. **useState() vs. useReducer():**
+    - `useState()` is a simple hook used to manage state in functional components. It returns a state variable and a function to update that state.
+    - `useReducer()` is more suitable for managing complex state logic. It uses a reducer function to handle state changes based on dispatched actions, similar to how Redux works.
+2. **useEffect() vs. useLayoutEffect():**
+    - `useEffect()` is used for performing side effects in functional components. It runs asynchronously after the browser has painted the changes on the screen.
+    - `useLayoutEffect()` is similar to `useEffect()`, but it runs synchronously after all DOM mutations and before the browser paints changes. It's useful for immediate DOM measurements or manipulations.
+3. **useCallback() vs. useMemo():**
+    - `useCallback()` is used to memoize functions. It caches a function instance to prevent unnecessary re-creation between renders, useful when passing callbacks to child components to optimize performance.
+    - `useMemo()` is used to memoize the result of a function. It caches the return value of a function and recalculates it only when the dependencies change. It's beneficial for caching expensive computations or values.
+4. **useContext() vs. useRef():**
+    - `useContext()` is used to consume context values in functional components. It allows components to access values from the nearest context provider in the component tree.
+    - `useRef()` is used to create a mutable reference that persists between renders. It's commonly used to access and manipulate DOM elements, store values, or hold references to components or values that should not trigger a re-render.
+5. **useMemo() vs. useLayoutEffect():**
+    - `useMemo()` is used to memoize the result of a function and recompute only when its dependencies change. It's used for caching expensive computations or values.
+    - `useLayoutEffect()` is used for immediate DOM manipulations or measurements that need to be applied before the browser paints changes.
+
+These hooks serve different purposes and have distinct use cases. Understanding their differences helps in choosing the appropriate hook based on specific requirements for managing state, performing side effects, optimizing performance, or interacting with the DOM in React components.
