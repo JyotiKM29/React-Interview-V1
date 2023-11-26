@@ -2,12 +2,7 @@
 # 🥳 React Interview Ques :
 
 there react question based on topic :
-
-## Beginner :
-
-
-
-
+## 😁 BEGINNER ======>
 
 
 
