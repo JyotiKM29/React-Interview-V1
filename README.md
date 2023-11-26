@@ -53,7 +53,7 @@ This means changes in the data affect how the user interface looks, and when use
 
 HTML: 
 - HTML as a set of building blocks or instructions you use to create the structure of a web page.
-- It's like putting together a Lego set by following a specific manual. For example, you use HTML tags like <div>, <p>, <h1>, and <img> to define different parts of a web page, such as paragraphs, headers, images, etc.
+- It's like putting together a Lego set by following a specific manual. For example, you use HTML tags like `<div>`, `<p>`, `<h1>`, and `<img>` to define different parts of a web page, such as paragraphs, headers, images, etc.
 
 JSX:
 - JSX is quite similar to HTML, but it's a special syntax used in React to describe what the user interface should look like.
@@ -488,7 +488,7 @@ function HelloWorldComponent() {
 ## Q26. What is the use of react-dom package?
 
 `react-dom` is a package in React primarily used for rendering React components into the DOM, managing the interactions between React's virtual DOM and the actual browser DOM, supporting React Portals, enabling DOM manipulation, event handling, error boundaries, and server-side rendering hydration.
-## Q25.What is the purpose of render method of react-dom?
+## Q27.What is the purpose of render method of react-dom?
 
 The `render()` method in `react-dom` is used to render React components into the DOM, taking a React element or component and mounting it into a specified container element in the HTML document.
 
@@ -513,7 +513,7 @@ ReactDOM.render(
 - ReactDOM.render() takes the <App /> element (or component) and mounts it into the HTML document at the element with the ID 'root'. This is where the React component will be rendered within the HTML DOM structure.
 
 The ReactDOM.render() method is the entry point for rendering React components into the DOM and is typically called once to initialize the main component of a React application.
-## Q27. Why does strict mode render twice in React?
+## Q28. Why does strict mode render twice in React?
 
 - In React's Strict Mode (`<React.StrictMode>`), components may render twice in development mode. 
 - This intentional behavior helps catch and highlight potential issues, such as `unsafe lifecycle` methods or `unintended side-effects`, aiding developers in identifying and fixing problems early in the development process. 
